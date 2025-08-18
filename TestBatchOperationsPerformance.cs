@@ -83,6 +83,7 @@ public class TestBatchOperationsPerformance
         DebugMgr.LogInfo(() => $"EntityBatch Add: {batchEntityBatchAddTime}ms");
     }
 
+    // * EntityBatch adds always components with same values.
     private static void BulkBatchAdd()
     {
         EntityStore store = CreateStore(out Entity[] entities);
@@ -97,9 +98,10 @@ public class TestBatchOperationsPerformance
         }
         sw.Stop();
         long bulkBatchAddTime = sw.ElapsedMilliseconds;
-        DebugMgr.LogInfo(() => $"BulkBatch Add: {bulkBatchAddTime}ms");
+        DebugMgr.LogInfo(() => $"BulkBatch Add: {bulkBatchAddTime}ms (*)");
     }
 
+    // * EntityBatch adds always components with same values.
     private static void EntityListAdd()
     {
         EntityStore store = CreateStore(out Entity[] entities);
@@ -114,6 +116,6 @@ public class TestBatchOperationsPerformance
         list.ApplyBatch(batch2);
         sw.Stop();
         long entityListBatchAddTime = sw.ElapsedMilliseconds;
-        DebugMgr.LogInfo(() => $"EntityList Batch Add: {entityListBatchAddTime}ms");
+        DebugMgr.LogInfo(() => $"EntityList Batch Add: {entityListBatchAddTime}ms (*)");
     }
 }
