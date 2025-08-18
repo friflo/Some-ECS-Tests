@@ -1,6 +1,14 @@
-﻿Console.WriteLine("Hello, World!");
+﻿using RouderSky;
 
-RouderSky.TestFrifloECSPerformance.RunAllPerformanceTests();
+Console.WriteLine("Hello, World!");
 
+// --- Some Warmup
+DebugMgr.EnableLogging = false;
+for (int n = 0; n < 10; n++) {
+    TestFrifloECSPerformance.RunAllPerformanceTests();
+}
 
-// See https://aka.ms/new-console-template for more information
+// --- Some Warmup
+DebugMgr.EnableLogging = true;
+TestFrifloECSPerformance.RunAllPerformanceTests();
+
