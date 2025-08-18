@@ -4,9 +4,9 @@ namespace RouderSky;
 
 public static class TestFrifloECSPerformance
 {
-    private const int ENTITY_COUNT = 100_000;
-    private const int SMALL_ENTITY_COUNT = 10_000;
-    private const int ITERATION_COUNT = 10;
+    public  const int ENTITY_COUNT = 100_000;
+    public const int SMALL_ENTITY_COUNT = 10_000;
+    public const int ITERATION_COUNT = 10;
     
     public struct TestComponent : IComponent 
     { 
@@ -75,114 +75,7 @@ public static class TestFrifloECSPerformance
         DebugMgr.LogInfo(() => $"Batch Creation: {batchCreationTime}ms");
     }
 
-    // 测试组件批量操作性能
-    public static void TestBatchOperationsPerformance()
-    {
-        DebugMgr.LogInfo(() => "");
-        DebugMgr.LogInfo(() => "=== Batch Operations Performance Test ===");
 
-        EntityStore store = new EntityStore();
-        var entities = new Entity[ENTITY_COUNT];
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i] = store.CreateEntity();
-        }
-
-        // 测试逐个添加组件
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].AddComponent(new TestComponent { value = i });
-            entities[i].AddComponent(new Position(i, i, i));
-            entities[i].AddTag<TestTag>();
-        }
-        sw.Stop();
-        long individualAddTime = sw.ElapsedMilliseconds;
-
-        // 重置实体
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].DeleteEntity();
-            entities[i] = store.CreateEntity();
-        }
-
-        // 测试批量添加组件
-        // wht que 为什么这里是最快的？
-        //      https://github.com/friflo/friflo-ecs-unity/issues/11
-        sw.Restart();
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].Add(
-                new TestComponent { value = i },
-                new Position(i, i, i),
-                Tags.Get<TestTag>());
-        }
-        sw.Stop();
-        long batchAddTime = sw.ElapsedMilliseconds;
-
-        // 重置实体
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].DeleteEntity();
-            entities[i] = store.CreateEntity();
-        }
-
-        // 测试EntityBatch批量添加组件
-        sw.Restart();
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].Batch()
-                .Add(new TestComponent { value = i })
-                .Add(new Position(i, i, i))
-                .AddTag<TestTag>();
-        }
-        sw.Stop();
-        long batchEntityBatchAddTime = sw.ElapsedMilliseconds;
-
-        // 重置实体
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].DeleteEntity();
-            entities[i] = store.CreateEntity();
-        }
-
-        // 测试BulkBatch批量添加组件
-        sw.Restart();
-        EntityBatch batch = new EntityBatch();
-        batch.Add(new TestComponent { value = 0 }).Add(new Position()).AddTag<TestTag>();    //有个缺点，没办法支持Position(i,i,i)这种形式
-        for (int i = 1; i < entities.Length; i++)
-        {
-            batch.ApplyTo(entities[i]);
-        }
-        sw.Stop();
-        long bulkBatchAddTime = sw.ElapsedMilliseconds;
-
-        // 重置实体
-        for (int i = 0; i < entities.Length; i++)
-        {
-            entities[i].DeleteEntity();
-            entities[i] = store.CreateEntity();
-        }
-
-        // 测试EntityList批量添加组件
-        sw.Restart();
-        EntityList list = new EntityList(store);
-        for (int i = 1; i < entities.Length; i++)
-        {
-            list.Add(entities[i]);
-        }
-        EntityBatch batch2 = new EntityBatch();
-        batch2.Add(new TestComponent { value = 0 }).Add(new Position()).AddTag<TestTag>();  //有个缺点，没办法支持Position(i,i,i)这种形式
-        list.ApplyBatch(batch2);
-        sw.Stop();
-        long entityListBatchAddTime = sw.ElapsedMilliseconds;
-
-        DebugMgr.LogInfo(() => $"Individual Add: {individualAddTime}ms");
-        DebugMgr.LogInfo(() => $"Batch Add: {batchAddTime}ms");
-        DebugMgr.LogInfo(() => $"EntityBatch Add: {batchEntityBatchAddTime}ms");
-        DebugMgr.LogInfo(() => $"BulkBatch Add: {bulkBatchAddTime}ms");
-        DebugMgr.LogInfo(() => $"EntityList Batch Add: {entityListBatchAddTime}ms");
-    }
 
     // 测试查询性能：普通查询 vs ForEach vs Chunks
 
@@ -428,7 +321,7 @@ public static class TestFrifloECSPerformance
         
         TestEntityCreationPerformance();
         
-        TestBatchOperationsPerformance();
+        TestBatchOperationsPerformance.Run();
         
         TestQueryPerformance();
         
