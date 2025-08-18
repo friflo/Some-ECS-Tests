@@ -31,6 +31,7 @@ public static class TestFrifloECSPerformance
     // 测试实体创建性能：逐个创建 vs 批量创建
     public static void TestEntityCreationPerformance()
     {
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Entity Creation Performance Test ===");
         
         // 测试逐个创建实体并添加组件
@@ -77,6 +78,7 @@ public static class TestFrifloECSPerformance
     // 测试组件批量操作性能
     public static void TestBatchOperationsPerformance()
     {
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Batch Operations Performance Test ===");
 
         EntityStore store = new EntityStore();
@@ -195,6 +197,7 @@ public static class TestFrifloECSPerformance
 
     public static void TestQueryPerformance()
     {
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Query Performance Test ===");
 
         // ParallelJobRunner runner = new ParallelJobRunner(Environment.ProcessorCount);
@@ -275,6 +278,7 @@ public static class TestFrifloECSPerformance
     // 测试并行查询性能
     public static void TestParallelQueryPerformance()
     {
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Parallel Query Performance Test ===");
         
         ParallelJobRunner runner = new ParallelJobRunner(Environment.ProcessorCount);
@@ -326,6 +330,7 @@ public static class TestFrifloECSPerformance
     // 测试索引查询性能
     public static void TestIndexedQueryPerformance()
     {
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Indexed Query Performance Test ===");
         
         EntityStore store = new EntityStore();
@@ -365,6 +370,7 @@ public static class TestFrifloECSPerformance
     // 测试组件访问性能：单个访问 vs 批量访问
     public static void TestComponentAccessPerformance()
     {
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Component Access Performance Test ===");
         
         EntityStore store = new EntityStore();
@@ -418,6 +424,7 @@ public static class TestFrifloECSPerformance
         DebugMgr.LogInfo(() => $"    Large Entity Count: {ENTITY_COUNT:N0}");
         DebugMgr.LogInfo(() => $"    Processor Count: {Environment.ProcessorCount}");
         DebugMgr.LogInfo(() => "========================================");
+        DebugMgr.LogInfo(() => "");
         
         TestEntityCreationPerformance();
         
@@ -431,6 +438,7 @@ public static class TestFrifloECSPerformance
         
         TestComponentAccessPerformance();
         
+        DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "========================================");
         DebugMgr.LogInfo(() => "    Performance Tests Completed");
         DebugMgr.LogInfo(() => "========================================");
