@@ -1,0 +1,24 @@
+
+
+bin/
+obj/
+.bin/
+.obj/
+
+.idea/
+.vs/
+
+
+!**/*.meta
+src/Tests/**/*.meta
+
+*.DotSettings.user
+
+## Editor
+Editor/DB/
+
+## Test Coverage file
+coverage.cobertura.xml
+
+## Test Coverage Rport folder
+Report/
