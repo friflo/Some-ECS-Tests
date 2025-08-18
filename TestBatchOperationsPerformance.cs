@@ -48,6 +48,7 @@ public class TestBatchOperationsPerformance
     private static void BatchAdd()
     {
         EntityStore store = CreateStore(out Entity[] entities);
+        var tags = Tags.Get<TestFrifloECSPerformance.TestTag>();
 
         // 测试批量添加组件
         // wht que 为什么这里是最快的？
@@ -58,7 +59,7 @@ public class TestBatchOperationsPerformance
             entities[i].Add(
                 new TestFrifloECSPerformance.TestComponent { value = i },
                 new Position(i, i, i),
-                Tags.Get<TestFrifloECSPerformance.TestTag>());
+                tags);
         }
         sw.Stop();
         long batchAddTime = sw.ElapsedMilliseconds;

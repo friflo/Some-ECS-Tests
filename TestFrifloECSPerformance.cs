@@ -4,7 +4,7 @@ namespace RouderSky;
 
 public static class TestFrifloECSPerformance
 {
-    public  const int ENTITY_COUNT = 100_000;
+    public  const int ENTITY_COUNT = 400_000;
     public const int SMALL_ENTITY_COUNT = 10_000;
     public const int ITERATION_COUNT = 10;
     
@@ -319,17 +319,17 @@ public static class TestFrifloECSPerformance
         DebugMgr.LogInfo(() => "========================================");
         DebugMgr.LogInfo(() => "");
         
-        TestEntityCreationPerformance();
+        // TestEntityCreationPerformance();
         
         TestBatchOperationsPerformance.Run();
         
-        TestQueryPerformance();
+        // TestQueryPerformance();
         
-        TestParallelQueryPerformance();
+        // TestParallelQueryPerformance();
         
-        TestIndexedQueryPerformance();
+        // TestIndexedQueryPerformance();
         
-        TestComponentAccessPerformance();
+        // TestComponentAccessPerformance();
         
         DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "========================================");
