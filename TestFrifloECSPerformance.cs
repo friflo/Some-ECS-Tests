@@ -45,7 +45,7 @@ public static class TestFrifloECSPerformance
             entity.AddTag<TestTag>();
         }
         sw.Stop();
-        long individualCreationTime = sw.ElapsedMilliseconds;
+        var individualCreationTime = sw.Elapsed.TotalMilliseconds;
         
         // 测试逐个创建实体并添加组件
         sw.Restart();
@@ -55,7 +55,7 @@ public static class TestFrifloECSPerformance
             store2.CreateEntity(new TestComponent { value = i }, new Position(), Tags.Get<TestTag>());
         }
         sw.Stop();
-        long individualWithComponentsTime = sw.ElapsedMilliseconds;
+        var individualWithComponentsTime = sw.Elapsed.TotalMilliseconds;
         
         // 测试批量创建相同Archetype的实体
         sw.Restart();
@@ -68,7 +68,7 @@ public static class TestFrifloECSPerformance
             entities[i].AddComponent(new TestComponent { value = i });
         }
         sw.Stop();
-        long batchCreationTime = sw.ElapsedMilliseconds;
+        var batchCreationTime = sw.Elapsed.TotalMilliseconds;
         
         DebugMgr.LogInfo(() => $"Individual Creation: {individualCreationTime}ms");
         DebugMgr.LogInfo(() => $"Individual + Components: {individualWithComponentsTime}ms");
@@ -113,7 +113,7 @@ public static class TestFrifloECSPerformance
             sum1 += entity.GetComponent<TestComponent>().value;
         }
         sw.Stop();
-        long normalIterationTime = sw.ElapsedMilliseconds;
+        var normalIterationTime = sw.Elapsed.TotalMilliseconds;
 
         // 测试ForEachEntity
         sw.Restart();
@@ -123,7 +123,7 @@ public static class TestFrifloECSPerformance
             sum2 += comp.value;
         });
         sw.Stop();
-        long forEachTime = sw.ElapsedMilliseconds;
+        var forEachTime = sw.Elapsed.TotalMilliseconds;
 
         // Each
         sw.Restart();
@@ -131,7 +131,7 @@ public static class TestFrifloECSPerformance
         query.Each(testEach);
         int sum3 = testEach.sum;
         sw.Stop();
-        long eachTime = sw.ElapsedMilliseconds;
+        var eachTime = sw.Elapsed.TotalMilliseconds;
 
         // 测试Chunks迭代
         sw.Restart();
@@ -144,7 +144,7 @@ public static class TestFrifloECSPerformance
             }
         }
         sw.Stop();
-        long chunksTime = sw.ElapsedMilliseconds;
+        var chunksTime = sw.Elapsed.TotalMilliseconds;
 
         // // 测试并行查询
         // sw.Restart();
@@ -157,7 +157,7 @@ public static class TestFrifloECSPerformance
         //     }
         // }).RunParallel();
         // sw.Stop();
-        // long parallelTime = sw.ElapsedMilliseconds;
+        // var parallelTime = sw.Elapsed.Milliseconds;
 
         // runner.Dispose();
 
@@ -167,6 +167,8 @@ public static class TestFrifloECSPerformance
         DebugMgr.LogInfo(() => $"Chunks Iteration: {chunksTime}ms (sum: {sum4})");
         // DebugMgr.LogInfo(() => $"Parallel Query: {parallelTime}ms (sum: {sum5})");
     }
+    
+    static ParallelJobRunner runner = new ParallelJobRunner(8);
 
     // 测试并行查询性能
     public static void TestParallelQueryPerformance()
@@ -174,7 +176,6 @@ public static class TestFrifloECSPerformance
         DebugMgr.LogInfo(() => "");
         DebugMgr.LogInfo(() => "=== Parallel Query Performance Test ===");
         
-        ParallelJobRunner runner = new ParallelJobRunner(Environment.ProcessorCount);
         EntityStore store = new EntityStore { JobRunner = runner };
         
         // 创建大量实体进行测试
@@ -192,7 +193,7 @@ public static class TestFrifloECSPerformance
             comp.value += 10; // 简单的计算操作
         });
         sw.Stop();
-        long singleThreadTime = sw.ElapsedMilliseconds;
+        var singleThreadTime = sw.Elapsed.TotalMilliseconds;
         
         // 重置数据
         query.ForEachEntity((ref TestComponent comp, Entity entity) =>
@@ -204,20 +205,19 @@ public static class TestFrifloECSPerformance
         sw.Restart();
         QueryJob<TestComponent> queryJob = query.ForEach((testComponents, entities) =>
         {
-            for (int i = 0; i < entities.Length; i++)
+            var span = testComponents.Span;
+            for (int i = 0; i < span.Length; i++)
             {
-                testComponents[i].value += 10;
+                span[i].value += 10;
             }
         });
         queryJob.RunParallel();     //wht que 为什么比单线程查询慢？
                                     //      https://github.com/friflo/friflo-ecs-unity/issues/12
         sw.Stop();
-        long parallelTime = sw.ElapsedMilliseconds;
+        var parallelTime = sw.Elapsed.TotalMilliseconds;
         
         DebugMgr.LogInfo(() => $"Single Thread: {singleThreadTime}ms");
         DebugMgr.LogInfo(() => $"Parallel ({Environment.ProcessorCount} cores): {parallelTime}ms");
-        
-        runner.Dispose();
     }
 
     // 测试索引查询性能
@@ -247,14 +247,14 @@ public static class TestFrifloECSPerformance
                 foundCount1++;
         });
         sw.Stop();
-        long normalQueryTime = sw.ElapsedMilliseconds;
+        var normalQueryTime = sw.Elapsed.TotalMilliseconds;
         
         // 测试索引查询性能
         sw.Restart();
         Entities entities = index[targetId];
         int foundCount2 = entities.Count;
         sw.Stop();
-        long indexedQueryTime = sw.ElapsedMilliseconds;
+        var indexedQueryTime = sw.Elapsed.TotalMilliseconds;
         
         DebugMgr.LogInfo(() => $"Normal Query: {normalQueryTime}ms (found: {foundCount1})");
         DebugMgr.LogInfo(() => $"Indexed Query: {indexedQueryTime}ms (found: {foundCount2})");
@@ -289,7 +289,7 @@ public static class TestFrifloECSPerformance
             sum1 += comp.value;
         }
         sw.Stop();
-        long individualAccessTime = sw.ElapsedMilliseconds;
+        var individualAccessTime = sw.Elapsed.TotalMilliseconds;
         
         // 测试使用entity.Data批量访问
         sw.Restart();
@@ -303,7 +303,7 @@ public static class TestFrifloECSPerformance
             sum2 += comp.value;
         }
         sw.Stop();
-        long batchAccessTime = sw.ElapsedMilliseconds;
+        var batchAccessTime = sw.Elapsed.TotalMilliseconds;
         
         DebugMgr.LogInfo(() => $"Individual Access: {individualAccessTime}ms (sum: {sum1})");
         DebugMgr.LogInfo(() => $"Batch Access (entity.Data): {batchAccessTime}ms (sum: {sum2})");
@@ -321,11 +321,13 @@ public static class TestFrifloECSPerformance
         
         // TestEntityCreationPerformance();
         
-        TestBatchOperationsPerformance.Run();
+        // TestBatchOperationsPerformance.Run();
         
         // TestQueryPerformance();
         
-        // TestParallelQueryPerformance();
+        TestParallelQueryPerformance();
+        
+        // EntitasVSFriflo.Run();
         
         // TestIndexedQueryPerformance();
         
