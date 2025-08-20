@@ -4,7 +4,7 @@ Console.WriteLine("Hello, World!");
 
 // --- Some Warmup
 DebugMgr.EnableLogging = false;
-for (int n = 0; n < 10; n++) {
+for (int n = 0; n < 0; n++) {
     TestFrifloECSPerformance.RunAllPerformanceTests();
 }
 
